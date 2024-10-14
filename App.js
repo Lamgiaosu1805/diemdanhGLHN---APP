@@ -14,7 +14,7 @@ function App() {
     <NavigationContainer>
       <StatusBar style='auto'/>
       <Stack.Navigator
-        initialRouteName='LoginScreen'
+        initialRouteName='HomeScreen'
         screenOptions={{
           headerShown: false
         }}
