@@ -22,7 +22,10 @@ export default function HomeScreen() {
             else {
                 const response = await axios.post(`${Utils.apiUrl}/member/createMember`, {
                     fullname: fullname,
-                    key: 'lamngonzai'
+                }, {
+                    headers: {
+                        key: "lamngonzai"
+                    }
                 })
                 const data = response.data
                 alert(`${data.message}`)
