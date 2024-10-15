@@ -3,17 +3,12 @@ import React, { useState } from 'react'
 import Header from '../components/Header'
 import axios from 'axios';
 import Utils from '../common/Utils';
+import ItemOnlyTitle from '../components/ItemOnlyTitle';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [fullname, setFullname] = useState('')
-
-    const Item = ({title, onPress}) => (
-        <TouchableOpacity style={styles.item} activeOpacity={0.6} onPress={onPress}>
-            <Text style={{fontSize: 16, fontWeight: '400'}}>{title}</Text>
-        </TouchableOpacity>
-    )
-
+    
     const addMember = async () => {
         try {
             if(fullname == '') {
@@ -64,9 +59,9 @@ export default function HomeScreen() {
             <Header title={"Trang chủ"} />
             <ScrollView>
                 <View style={{marginTop: 20, paddingHorizontal: 16}}>
-                    <Item title={"Danh sách lớp"}/>
-                    <Item title={"Thêm thành viên"} onPress={() => setModalVisible(true)} />
-                    <Item title={"Điểm danh"}/>
+                    <ItemOnlyTitle title={"Danh sách lớp"} onPress={() => navigation.navigate('ListMemberScreen')}/>
+                    <ItemOnlyTitle title={"Thêm thành viên"} onPress={() => setModalVisible(true)} />
+                    <ItemOnlyTitle title={"Điểm danh"}/>
                 </View>
             </ScrollView>
         </View>
@@ -74,22 +69,6 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-    item: {
-        backgroundColor: 'white',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.23,
-        shadowRadius: 2.62,
-
-        elevation: 4,
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderRadius: 12,
-        marginBottom: 16
-    },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',

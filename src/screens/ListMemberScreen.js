@@ -1,10 +1,47 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Header from '../components/Header'
+import axios from 'axios'
+import Utils from '../common/Utils'
+import ItemOnlyTitle from '../components/ItemOnlyTitle'
 
 export default function ListMemberScreen() {
+  const [listMember, setListMember] = useState([])
+
+  const getListMember = async () => {
+    try {
+      const response = await axios.get(`${Utils.apiUrl}/member/getMember`, {
+        headers: {
+          key: 'lamngonzai'
+        }
+      })
+      const data = response.data
+      if(data.status == true) {
+        setListMember(data.data)
+      }
+      else {
+        alert(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      alert('Có lỗi khi lấy danh sách member')
+    }
+  }
+
+  useEffect(() => {
+    getListMember()
+  }, [])
+
   return (
-    <View>
-      <Text>ListMember</Text>
+    <View style={{flex:1, backgroundColor: 'white'}}>
+      <Header title={"Danh sách thành viên"}/>
+      <View style={{marginTop: 20, paddingHorizontal: 16}}>
+        {
+          listMember.map((item, index) => (
+            <ItemOnlyTitle title={index+1 + '. ' + item.fullname} key={item._id}/>
+          ))
+        }
+      </View>
     </View>
   )
 }
