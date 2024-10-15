@@ -8,7 +8,7 @@ import ItemOnlyTitle from '../components/ItemOnlyTitle';
 export default function HomeScreen({navigation}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [fullname, setFullname] = useState('')
-    
+
     const addMember = async () => {
         try {
             if(fullname == '') {
@@ -61,7 +61,7 @@ export default function HomeScreen({navigation}) {
                 <View style={{marginTop: 20, paddingHorizontal: 16}}>
                     <ItemOnlyTitle title={"Danh sách lớp"} onPress={() => navigation.navigate('ListMemberScreen')}/>
                     <ItemOnlyTitle title={"Thêm thành viên"} onPress={() => setModalVisible(true)} />
-                    <ItemOnlyTitle title={"Điểm danh"}/>
+                    <ItemOnlyTitle title={"Điểm danh"} onPress={() => navigation.navigate("ListSheetDiemDanhScreen")}/>
                 </View>
             </ScrollView>
         </View>

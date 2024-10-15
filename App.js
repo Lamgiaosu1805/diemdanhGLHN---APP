@@ -7,6 +7,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import { StatusBar } from 'expo-status-bar';
 import HomeScreen from './src/screens/HomeScreen';
 import ListMemberScreen from './src/screens/ListMemberScreen';
+import ListSheetDiemDanhScreen from './src/screens/ListSheetDiemDanhScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ function App() {
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
         <Stack.Screen name="ListMemberScreen" component={ListMemberScreen} />
+        <Stack.Screen name="ListSheetDiemDanhScreen" component={ListSheetDiemDanhScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
