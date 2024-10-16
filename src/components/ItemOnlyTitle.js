@@ -1,9 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 
-export default function ItemOnlyTitle({title, onPress, style}) {
+export default function ItemOnlyTitle({title, onPress, style, buttonStyle}) {
   return (
-    <TouchableOpacity style={styles.item} activeOpacity={0.6} onPress={onPress}>
+    <TouchableOpacity style={[styles.item, buttonStyle]} activeOpacity={0.6} onPress={onPress}>
         <Text style={[{fontSize: 16, fontWeight: '400'}, style]}>{title}</Text>
     </TouchableOpacity>
   )
@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.23,
         shadowRadius: 2.62,
-
         elevation: 4,
         paddingVertical: 12,
         paddingHorizontal: 16,

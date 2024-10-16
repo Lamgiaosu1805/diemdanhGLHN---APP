@@ -5,11 +5,11 @@ import axios from 'axios'
 import Utils from '../common/Utils'
 import ItemOnlyTitle from '../components/ItemOnlyTitle'
 
-export default function ListSheetDiemDanhScreen() {
+export default function ListSheetDiemDanhScreen({navigation}) {
     const [listSheet, setListSheet] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedType, setSelectedType] = useState(1)
-    
+
     const getListSheet = async () => {
         try {
             const response = await axios.get(`${Utils.apiUrl}/diemdanh/getListSheetDiemDanh`, {
@@ -95,7 +95,7 @@ export default function ListSheetDiemDanhScreen() {
                 </TouchableOpacity>
                 {
                     listSheet.map((item) => (
-                        <ItemOnlyTitle title={Utils.parseDayTime(item.time) + ' - ' + Utils.formatDate(item.createdAt) + `${item.status == 0 ? "": " - " + item.status == 1 ? "Đã lưu" : "Đã chốt"}`} key={item._id} style={styles.itemTitle}/>
+                        <ItemOnlyTitle title={Utils.parseDayTime(item.time) + ' - ' + Utils.formatDate(item.createdAt) + `${item.status == 0 ? "": " - " + item.status == 1 ? "Đã lưu" : "Đã chốt"}`} key={item._id} style={styles.itemTitle} onPress={() => navigation.navigate('DiemDanhScreen', {idSheet: item._id})}/>
                     ))
                 }
             </View>
