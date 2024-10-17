@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,8 @@ import Utils from '../common/Utils'
 import { onPressMemberItem, storeListDiemDanh } from '../redux/Silces/DiemDanhSlice'
 import ItemOnlyTitle from '../components/ItemOnlyTitle'
 import { updateStatusSheet } from '../redux/Silces/SheetDiemDanhSlice'
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 export default function DiemDanhScreen({route}) {
     const dispatch = useDispatch()
@@ -24,6 +26,33 @@ export default function DiemDanhScreen({route}) {
             member: item
         }))
     }
+
+    const downloadExcel = async () => {
+        // const url = `${Utils.apiUrl}/diemdanh/genExcelFile`;
+        const uri = `${Utils.apiUrl}/diemdanh/genExcelFile/${idSheet}`; // API tải file Excel
+        const response = await fetch(uri);
+        const data = await response.text();
+        const fileName = 'myFile.xlsx';
+    const fileUri = `${FileSystem.documentDirectory}${fileName}`;
+
+    try {
+      // Ghi dữ liệu base64 vào file
+      await FileSystem.writeAsStringAsync(fileUri, data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      // Chia sẻ file với người dùng
+      await Sharing.shareAsync(fileUri, {
+        dialogTitle: 'Save Excel File',
+        UTI: 'com.microsoft.excel.xls', // Định danh loại file cho Excel
+      });
+
+      Alert.alert('Success', 'File has been saved and shared!');
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Error', 'Failed to save file.');
+    }
+    };
 
     const softSubmit = async () => {
         try {
@@ -158,6 +187,9 @@ export default function DiemDanhScreen({route}) {
                     </TouchableOpacity>
                 </View>
             }
+            <TouchableOpacity onPress={downloadExcel}>
+                <Text>Tải excel</Text>
+            </TouchableOpacity>
         </View>
     )
 }
