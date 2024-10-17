@@ -14,6 +14,7 @@ const sheetDiemDanh = createSlice({
         updateStatusSheet: (state, action) => {
             const item = state.find((e) => e._id == action.payload.sheetId)
             item.status = action.payload.newStatusSheet
+            item.updatedAt = action.payload.updatedAt
             return state
         }
     }

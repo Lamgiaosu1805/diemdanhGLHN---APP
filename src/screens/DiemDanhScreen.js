@@ -11,10 +11,12 @@ import { updateStatusSheet } from '../redux/Silces/SheetDiemDanhSlice'
 export default function DiemDanhScreen({route}) {
     const dispatch = useDispatch()
     var listSheetMemberDiemDanh = useSelector(state => state.diemDanh)
-    const { idSheet, title, statusSheet } = route.params
+    const listSheet = useSelector(state => state.sheetDiemDanh)
+    const { idSheet, statusSheet } = route.params
 
-    const currentSheet = listSheetMemberDiemDanh.find(item => item.idSheet == idSheet)
-    const listMember = currentSheet?.listMember || []
+    const currentSheetMember = listSheetMemberDiemDanh.find(item => item.idSheet == idSheet)
+    const listMember = currentSheetMember?.listMember || []
+    const currentSheet = listSheet?.find(item => item._id == idSheet)
 
     const handlePressItem = (item) => {
         dispatch(onPressMemberItem({
@@ -25,7 +27,7 @@ export default function DiemDanhScreen({route}) {
 
     const softSubmit = async () => {
         try {
-            const response = await axios.post(`${Utils.apiUrl}/diemdanh/sortSubmit`, {
+            const response = await axios.post(`${Utils.apiUrl}/diemdanh/softSubmit`, {
                 idSheet,
                 listThanhVien: listMember
             }, {
@@ -37,12 +39,37 @@ export default function DiemDanhScreen({route}) {
             if(data.status == true) {
                 dispatch(updateStatusSheet({
                     sheetId: idSheet,
-                    newStatusSheet: 1
+                    newStatusSheet: 1,
+                    updatedAt: data.data.updatedAt
                 }))
             }
             alert(data.message)
         } catch (error) {
             alert("Có lỗi khi lưu điểm danh")
+        }
+    }
+
+    const blockDiemDanh = async () => {
+        try {
+            const response = await axios.post(`${Utils.apiUrl}/diemdanh/blockDiemDanh`, {
+                idSheet,
+            }, {
+                headers: {
+                    key: 'lamngonzai'
+                }
+            })
+            const data = response.data
+            if(data.status == true) {
+                dispatch(updateStatusSheet({
+                    sheetId: idSheet,
+                    newStatusSheet: 2,
+                    updatedAt: data.data.updatedAt
+                }))
+            }
+            alert(`${data.message}`)
+        } catch (error) {
+            console.log(error)
+            alert('Chốt điểm danh thất bại')
         }
     }
 
@@ -103,25 +130,34 @@ export default function DiemDanhScreen({route}) {
             <Header title={"Điểm danh"}/>
             <ScrollView>
                 <View style={{marginTop: 20, paddingHorizontal: 16, marginBottom: 16}}>
-                    <Text style={{marginBottom: 16, fontSize: 16}}>{title}</Text>
+                    <Text style={{marginBottom: 16, fontSize: 16}}>
+                        {Utils.parseDayTime(currentSheet?.time) + ' - ' + Utils.formatDate(currentSheet?.createdAt) + `${currentSheet?.status == 0 ? "" : currentSheet?.status == 1 ? " - Đã lưu" : " - Đã chốt"}`}
+                    </Text>
+                    <Text style={{marginBottom: 16, fontSize: 16}}>
+                        {"Cập nhật lần cuối" + ' - ' + Utils.formatDateTime(currentSheet?.updatedAt)}
+                    </Text>
                     {
                         listMember.map((item, index) => {
                             return (
-                                <ItemOnlyTitle title={`${index+1}. ${item.fullname}`} key={index.toString()} onPress={() => handlePressItem(item)} buttonStyle={item.status == 1 && styles.selectedItem}/>
+                                <ItemOnlyTitle title={`${index+1}. ${item.fullname}`} key={index.toString()} onPress={() => {currentSheet.status == 2 ? null : handlePressItem(item)}} buttonStyle={item.status == 1 && styles.selectedItem}/>
                             )
                         })
                     }
                 </View>
             </ScrollView>
-            <View style={{flexDirection: 'row', marginBottom: 40, alignSelf: 'center'}}>
-                <TouchableOpacity style={{backgroundColor: '#bee09d', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7} onPress={softSubmit}>
-                    <Text>Lưu điểm danh</Text>
-                </TouchableOpacity>
-                <View style={{width: 32}}></View>
-                <TouchableOpacity style={{backgroundColor: '#e6b491', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7}>
-                    <Text>Khoá điểm danh</Text>
-                </TouchableOpacity>
-            </View>
+            {
+                currentSheet.status != 2
+                &&
+                <View style={{flexDirection: 'row', marginBottom: 40, alignSelf: 'center'}}>
+                    <TouchableOpacity style={{backgroundColor: '#bee09d', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7} onPress={softSubmit}>
+                        <Text>Lưu điểm danh</Text>
+                    </TouchableOpacity>
+                    <View style={{width: 32}}></View>
+                    <TouchableOpacity style={{backgroundColor: '#e6b491', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7} onPress={blockDiemDanh}>
+                        <Text>Chốt điểm danh</Text>
+                    </TouchableOpacity>
+                </View>
+            }
         </View>
     )
 }
