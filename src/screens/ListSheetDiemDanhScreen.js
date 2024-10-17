@@ -4,11 +4,15 @@ import Header from '../components/Header'
 import axios from 'axios'
 import Utils from '../common/Utils'
 import ItemOnlyTitle from '../components/ItemOnlyTitle'
+import { useDispatch, useSelector } from 'react-redux'
+import { addSheetDiemDanh, storeSheetDiemDanh } from '../redux/Silces/SheetDiemDanhSlice'
 
 export default function ListSheetDiemDanhScreen({navigation}) {
-    const [listSheet, setListSheet] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
     const [selectedType, setSelectedType] = useState(1)
+    const dispatch = useDispatch()
+
+    const listSheet = useSelector(state => state.sheetDiemDanh)
 
     const getListSheet = async () => {
         try {
@@ -19,7 +23,7 @@ export default function ListSheetDiemDanhScreen({navigation}) {
             })
             const data = response.data
             if(data.status == true) {
-                setListSheet(data.data)
+                dispatch(storeSheetDiemDanh(data.data))
             }
             else {
                 alert(data.message)
@@ -41,6 +45,7 @@ export default function ListSheetDiemDanhScreen({navigation}) {
             })
             const data = response.data
             if(data.status == true) {
+                dispatch(addSheetDiemDanh(data.data))
                 alert("Tạo phiếu điểm danh thành công")
                 setModalVisible(false)
             }
@@ -95,7 +100,7 @@ export default function ListSheetDiemDanhScreen({navigation}) {
                 </TouchableOpacity>
                 {
                     listSheet.map((item) => (
-                        <ItemOnlyTitle title={Utils.parseDayTime(item.time) + ' - ' + Utils.formatDate(item.createdAt) + `${item.status == 0 ? "": " - " + item.status == 1 ? "Đã lưu" : "Đã chốt"}`} key={item._id} style={styles.itemTitle} onPress={() => navigation.navigate('DiemDanhScreen', {idSheet: item._id})}/>
+                        <ItemOnlyTitle title={Utils.parseDayTime(item.time) + ' - ' + Utils.formatDate(item.createdAt) + `${item.status == 0 ? "" : item.status == 1 ? " - Đã lưu" : " - Đã chốt"}`} key={item._id} style={styles.itemTitle} onPress={() => navigation.navigate('DiemDanhScreen', {idSheet: item._id, title: Utils.parseDayTime(item.time) + ' - ' + Utils.formatDate(item.createdAt) + `${item.status == 0 ? "" : item.status == 1 ? " - Đã lưu" : " - Đã chốt"}`, statusSheet: item.status})}/>
                     ))
                 }
             </View>

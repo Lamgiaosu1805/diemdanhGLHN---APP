@@ -1,7 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 import diemDanhReducer from './Silces/DiemDanhSlice'
+import sheetDiemDanhReducer from './Silces/SheetDiemDanhSlice'
 const rootReducer = {
-    diemDanh: diemDanhReducer
+    diemDanh: diemDanhReducer,
+    sheetDiemDanh: sheetDiemDanhReducer
 }
 
 const store = configureStore({

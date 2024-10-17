@@ -6,11 +6,12 @@ import axios from 'axios'
 import Utils from '../common/Utils'
 import { onPressMemberItem, storeListDiemDanh } from '../redux/Silces/DiemDanhSlice'
 import ItemOnlyTitle from '../components/ItemOnlyTitle'
+import { updateStatusSheet } from '../redux/Silces/SheetDiemDanhSlice'
 
 export default function DiemDanhScreen({route}) {
     const dispatch = useDispatch()
     var listSheetMemberDiemDanh = useSelector(state => state.diemDanh)
-    const { idSheet } = route.params
+    const { idSheet, title, statusSheet } = route.params
 
     const currentSheet = listSheetMemberDiemDanh.find(item => item.idSheet == idSheet)
     const listMember = currentSheet?.listMember || []
@@ -34,7 +35,10 @@ export default function DiemDanhScreen({route}) {
             })
             const data = response.data
             if(data.status == true) {
-
+                dispatch(updateStatusSheet({
+                    sheetId: idSheet,
+                    newStatusSheet: 1
+                }))
             }
             alert(data.message)
         } catch (error) {
@@ -44,18 +48,32 @@ export default function DiemDanhScreen({route}) {
 
     const getListMember = async () => {
         try {
-            const response = await axios.get(`${Utils.apiUrl}/member/getMember`, {
-                headers: {
-                key: 'lamngonzai'
-                }
-            })
+            var response;
+            if(statusSheet == 0) {
+                response = await axios.get(`${Utils.apiUrl}/member/getMember`, {
+                    headers: {
+                        key: 'lamngonzai'
+                    }
+                })
+            }
+            else {
+                response = await axios.get(`${Utils.apiUrl}/diemdanh/getListMemberDiemDanh/${idSheet}`, {
+                    headers: {
+                        key: 'lamngonzai'
+                    }
+                })
+            }
+            if(!response) {
+                alert("Không thể lấy danh sách thành viên điểm danh")
+                return
+            }
             const data = response.data
             if(data.status == true) {
                 const diemDanhMember = data.data.map((item) => {
                     return {
-                        idMember: item._id,
-                        fullname: item.fullname,
-                        status: 0
+                        idMember: statusSheet == 0 ? item._id : item.infoThanhVien.idMember,
+                        fullname: statusSheet == 0 ? item.fullname : item.infoThanhVien.fullname,
+                        status: statusSheet == 0 ? 0 : item.status
                     }
                 })
                 const storeData = {
@@ -85,10 +103,11 @@ export default function DiemDanhScreen({route}) {
             <Header title={"Điểm danh"}/>
             <ScrollView>
                 <View style={{marginTop: 20, paddingHorizontal: 16, marginBottom: 16}}>
+                    <Text style={{marginBottom: 16, fontSize: 16}}>{title}</Text>
                     {
                         listMember.map((item, index) => {
                             return (
-                                <ItemOnlyTitle title={`${index+1}. ${item.fullname}`} key={item.idMember} onPress={() => handlePressItem(item)} buttonStyle={item.status == 1 && styles.selectedItem}/>
+                                <ItemOnlyTitle title={`${index+1}. ${item.fullname}`} key={index.toString()} onPress={() => handlePressItem(item)} buttonStyle={item.status == 1 && styles.selectedItem}/>
                             )
                         })
                     }
