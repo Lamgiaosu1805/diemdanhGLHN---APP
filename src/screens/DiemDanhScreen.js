@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,6 +7,8 @@ import Utils from '../common/Utils'
 import { onPressMemberItem, storeListDiemDanh } from '../redux/Silces/DiemDanhSlice'
 import ItemOnlyTitle from '../components/ItemOnlyTitle'
 import { updateStatusSheet } from '../redux/Silces/SheetDiemDanhSlice'
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 
 export default function DiemDanhScreen({route}) {
     const dispatch = useDispatch()
@@ -24,6 +26,31 @@ export default function DiemDanhScreen({route}) {
             member: item
         }))
     }
+
+    const downloadExcel = async () => {
+        const uri = `${Utils.apiUrl}/diemdanh/genExcelFile/${idSheet}`; // API tải file Excel
+        const response = await fetch(uri);
+        const data = await response.text();
+        const fileName = `DiemDanh.xlsx`;
+        const fileUri = `${FileSystem.documentDirectory}${fileName}`;
+
+        try {
+            // Ghi dữ liệu base64 vào file
+            // await FileSystem.writeAsStringAsync(fileUri, data, {
+            //     encoding: FileSystem.EncodingType.Base64,
+            // });
+
+            // Chia sẻ file với người dùng
+            await Sharing.shareAsync(fileUri, {
+                dialogTitle: 'Save Excel File',
+                UTI: 'com.microsoft.excel.xls', // Định danh loại file cho Excel
+            });
+            // Alert.alert('Success', 'File has been saved and shared!');
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Failed to save file.');
+        }
+    };
 
     const softSubmit = async () => {
         try {
@@ -147,8 +174,8 @@ export default function DiemDanhScreen({route}) {
             </ScrollView>
             {
                 currentSheet.status != 2
-                &&
-                <View style={{flexDirection: 'row', marginBottom: 40, alignSelf: 'center'}}>
+                ?
+                <View style={{flexDirection: 'row', marginBottom: 32, alignSelf: 'center'}}>
                     <TouchableOpacity style={{backgroundColor: '#bee09d', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7} onPress={softSubmit}>
                         <Text>Lưu điểm danh</Text>
                     </TouchableOpacity>
@@ -157,6 +184,10 @@ export default function DiemDanhScreen({route}) {
                         <Text>Chốt điểm danh</Text>
                     </TouchableOpacity>
                 </View>
+                :
+                <TouchableOpacity style={{backgroundColor: '#e6b491', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7} onPress={downloadExcel}>
+                    <Text>Lưu danh sách điểm danh</Text>
+                </TouchableOpacity>
             }
         </View>
     )
