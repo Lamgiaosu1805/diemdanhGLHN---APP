@@ -28,30 +28,28 @@ export default function DiemDanhScreen({route}) {
     }
 
     const downloadExcel = async () => {
-        // const url = `${Utils.apiUrl}/diemdanh/genExcelFile`;
         const uri = `${Utils.apiUrl}/diemdanh/genExcelFile/${idSheet}`; // API tải file Excel
         const response = await fetch(uri);
         const data = await response.text();
-        const fileName = 'myFile.xlsx';
-    const fileUri = `${FileSystem.documentDirectory}${fileName}`;
+        const fileName = `DiemDanh.xlsx`;
+        const fileUri = `${FileSystem.documentDirectory}${fileName}`;
 
-    try {
-      // Ghi dữ liệu base64 vào file
-      await FileSystem.writeAsStringAsync(fileUri, data, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+        try {
+            // Ghi dữ liệu base64 vào file
+            // await FileSystem.writeAsStringAsync(fileUri, data, {
+            //     encoding: FileSystem.EncodingType.Base64,
+            // });
 
-      // Chia sẻ file với người dùng
-      await Sharing.shareAsync(fileUri, {
-        dialogTitle: 'Save Excel File',
-        UTI: 'com.microsoft.excel.xls', // Định danh loại file cho Excel
-      });
-
-      Alert.alert('Success', 'File has been saved and shared!');
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to save file.');
-    }
+            // Chia sẻ file với người dùng
+            await Sharing.shareAsync(fileUri, {
+                dialogTitle: 'Save Excel File',
+                UTI: 'com.microsoft.excel.xls', // Định danh loại file cho Excel
+            });
+            // Alert.alert('Success', 'File has been saved and shared!');
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'Failed to save file.');
+        }
     };
 
     const softSubmit = async () => {
@@ -176,8 +174,8 @@ export default function DiemDanhScreen({route}) {
             </ScrollView>
             {
                 currentSheet.status != 2
-                &&
-                <View style={{flexDirection: 'row', marginBottom: 40, alignSelf: 'center'}}>
+                ?
+                <View style={{flexDirection: 'row', marginBottom: 32, alignSelf: 'center'}}>
                     <TouchableOpacity style={{backgroundColor: '#bee09d', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7} onPress={softSubmit}>
                         <Text>Lưu điểm danh</Text>
                     </TouchableOpacity>
@@ -186,10 +184,11 @@ export default function DiemDanhScreen({route}) {
                         <Text>Chốt điểm danh</Text>
                     </TouchableOpacity>
                 </View>
+                :
+                <TouchableOpacity style={{backgroundColor: '#e6b491', padding: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16}} activeOpacity={0.7} onPress={downloadExcel}>
+                    <Text>Lưu danh sách điểm danh</Text>
+                </TouchableOpacity>
             }
-            <TouchableOpacity onPress={downloadExcel}>
-                <Text>Tải excel</Text>
-            </TouchableOpacity>
         </View>
     )
 }
