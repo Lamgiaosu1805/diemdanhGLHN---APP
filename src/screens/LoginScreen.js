@@ -6,7 +6,7 @@ export default function LoginScreen({navigation}) {
     const [password, setPassword] = useState('')
     const login = () => {
         if(username == "lamngonzai" && password == "nghiemlamhust1") {
-            navigation.navigate('HomeScreen')
+            navigation.replace('HomeScreen')
         }
         else {
             alert("Sai tài khoản hoặc mật khẩu")

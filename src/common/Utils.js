@@ -1,7 +1,7 @@
 const apiLocal = 'http://192.168.1.11:9000'
-const apiProduct = ''
+const apiProduct = 'http://42.113.122.118:9000'
 const Utils = {
-    apiUrl: apiLocal,
+    apiUrl: apiProduct,
     parseDayTime: (type) => {
         if(type == 1) {
             return "Sáng"
