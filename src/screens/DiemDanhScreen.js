@@ -36,9 +36,9 @@ export default function DiemDanhScreen({route}) {
 
         try {
             // Ghi dữ liệu base64 vào file
-            // await FileSystem.writeAsStringAsync(fileUri, data, {
-            //     encoding: FileSystem.EncodingType.Base64,
-            // });
+            await FileSystem.writeAsStringAsync(fileUri, data, {
+                encoding: FileSystem.EncodingType.Base64,
+            });
 
             // Chia sẻ file với người dùng
             await Sharing.shareAsync(fileUri, {
