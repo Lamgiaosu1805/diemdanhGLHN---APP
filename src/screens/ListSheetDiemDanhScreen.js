@@ -85,6 +85,12 @@ export default function ListSheetDiemDanhScreen({navigation}) {
                                 <TouchableOpacity style={{backgroundColor: selectedType == 2 ? '#8db1eb' : 'white', padding: 12, borderRadius: 8}} onPress={() => {setSelectedType(2)}}>
                                     <Text>Chiều</Text>
                                 </TouchableOpacity>
+                                <View style={{width: 20}}>
+
+                                </View>
+                                <TouchableOpacity style={{backgroundColor: selectedType == 3 ? '#8db1eb' : 'white', padding: 12, borderRadius: 8}} onPress={() => {setSelectedType(3)}}>
+                                    <Text>Lễ</Text>
+                                </TouchableOpacity>
                             </View>
                             <TouchableOpacity style={{paddingHorizontal: 20, paddingVertical: 12, backgroundColor: 'red', marginTop: 20, borderRadius: 12}} onPress={createSheetDiemDanh}>
                                 <Text style={{fontSize: 16, fontWeight: '700', color: 'white'}}>Thêm</Text>
