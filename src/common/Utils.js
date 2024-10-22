@@ -1,4 +1,4 @@
-const apiLocal = 'http://192.168.1.11:9000'
+const apiLocal = 'http://192.168.1.18:9000'
 const apiProduct = 'http://42.113.122.118:9000'
 const Utils = {
     apiUrl: apiProduct,
@@ -8,6 +8,9 @@ const Utils = {
         }
         else if(type == 2) {
             return "Chiều"
+        }
+        else if(type == 3) {
+            return "Lễ"
         }
     },
     formatDate: (dateString) => {
