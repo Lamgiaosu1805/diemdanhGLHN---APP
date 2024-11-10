@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../components/Header'
 import axios from 'axios'
@@ -35,13 +35,15 @@ export default function ListMemberScreen() {
   return (
     <View style={{flex:1, backgroundColor: 'white'}}>
       <Header title={"Danh sách thành viên"}/>
-      <View style={{marginTop: 20, paddingHorizontal: 16}}>
-        {
-          listMember.map((item, index) => (
-            <ItemOnlyTitle title={index+1 + '. ' + item.fullname} key={item._id}/>
-          ))
-        }
-      </View>
+      <ScrollView>
+        <View style={{marginTop: 20, paddingHorizontal: 16, marginBottom: 20}}>
+          {
+            listMember.map((item, index) => (
+              <ItemOnlyTitle title={index+1 + '. ' + item.fullname} key={item._id}/>
+            ))
+          }
+        </View>
+      </ScrollView>
     </View>
   )
 }
